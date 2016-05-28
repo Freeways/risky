@@ -53,4 +53,78 @@ angular.module('starter.controllers', [])
 })
 
 .controller('PlaylistCtrl', function($scope, $stateParams) {
-});
+})
+
+
+.controller('WifiCtrl', ['$scope','WifiService', function($scope, WifiService){
+  
+  $scope.wifiList = [];
+
+  window.setInterval(function(){
+    $scope.wifiList = WifiService.list();
+    console.log($scope.wifiList);
+    $scope.$apply();
+  }, 2000);
+
+  $scope.getList = function(){
+    $scope.wifiList = WifiService.list();
+  }
+
+ /* $ionicPlatform.ready(function() {
+    $cordovaWifiWizard.listNetworks().then(function(data){
+      // $scope.wifiList = data;
+      console.log(data);
+    }, function(){});
+  });
+
+  $cordovaWifiWizard.listNetworks().then(function(data){
+    $scope.wifiList = data;
+  });
+  
+  $scope.isEnabled = true;
+
+  window.setTimeout(function(){
+    WifiService.isEnabled(function(e){
+      $scope.isEnabled = true;
+    }, function(e){
+      $scope.isEnabled = false;
+      // An elaborate, custom popup
+      var myPopup = $ionicPopup.show({
+        template: 'Please enable wifi before using this feature',
+        title: 'Wifi ',
+        subTitle: 'Wifi access is disabled!',
+        scope: $scope,
+        buttons: [
+          { text: 'Cancel' },
+          {
+            text: '<b>Enable</b>',
+            type: 'button-positive',
+            onTap: function(e) {
+              if ($scope.isEnabled) {
+                //don't allow the user to close unless he enters wifi password
+                e.preventDefault();
+              } else {
+                return $scope.enableWifi();
+              }
+            }
+          }
+        ]
+      });
+    });
+    $scope.$apply();
+  }, 5000);
+
+  window.setTimeout(function(){
+    $scope.wifiList = WifiService.list();
+    $scope.$apply();
+  }, 5000);
+
+  $scope.getList = function(){
+    $scope.wifiList = WifiService.list();
+  }
+
+  $scope.enableWifi = function(){
+    WifiService.enableWifi();
+  }*/
+
+}]);

@@ -4,7 +4,8 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngStorage', '$cordovaLocalNotification', 'starter.controllers'])
+
+angular.module('starter', ['ionic', 'ngStorage', '$cordovaLocalNotification', 'ngCordova', 'starter.controllers', 'WifiServices'])
 .factory ('StorageService', function ($localStorage) {
   $localStorage = $localStorage.$default({
     products: [], cve: []
@@ -110,9 +111,18 @@ angular.module('starter', ['ionic', 'ngStorage', '$cordovaLocalNotification', 's
         'menuContent': {
           templateUrl: 'templates/cves.html',
           controller: 'CvesCtrl'
-        }
       }
-    })
+    }
+  })
+  .state('app.wifi', {
+    url: '/wifi',
+    views: {
+      'menuContent': {
+        templateUrl: 'templates/wifi.html',
+        controller: 'WifiCtrl'
+      }
+    }
+  })
 
   .state('app.single', {
     url: '/cves/:id',

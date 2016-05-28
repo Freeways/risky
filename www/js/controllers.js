@@ -1,16 +1,15 @@
 angular.module('starter.controllers', [])
-        
+
         .controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
+                  // With the new view caching in Ionic, Controllers are only called
+                  // when they are recreated or on app start, instead of every page change.
+                  // To listen for when this page is active (for example, to refresh data),
+                  // listen for the $ionicView.enter event:
+                  //$scope.$on('$ionicView.enter', function(e) {
+                  //});
 
-          // With the new view caching in Ionic, Controllers are only called
-          // when they are recreated or on app start, instead of every page change.
-          // To listen for when this page is active (for example, to refresh data),
-          // listen for the $ionicView.enter event:
-          //$scope.$on('$ionicView.enter', function(e) {
-          //});
-
-          // Form data for the login modal
-          $scope.loginData = {};
+                  // Form data for the login modal
+                  $scope.loginData = {};
 
           // Create the login modal that we will use later
           $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -40,26 +39,26 @@ angular.module('starter.controllers', [])
             }, 1000);
           };
         })
-        
+
         .controller('VendorsCtrl', ['$scope', '$http', function ($scope, $http) {
-          
-          fetchVendors = function () {
-            $scope.code = null;
-            $scope.response = null;
-            $http({method: 'GET', url: 'https://cve.circl.lu/api/browse'}).
-                    then(function (response) {
-                      $scope.status = response.status;
-                      $scope.vendor = response.data;
-                    }, function (response) {
-                      $scope.vendor = response.data || "Request failed";
-                      $scope.status = response.status;
-                    });
-          };
-          fetchVendors();
-        }])
-        
+
+            fetchVendors = function () {
+              $scope.code = null;
+              $scope.response = null;
+              $http({method: 'GET', url: 'https://cve.circl.lu/api/browse'}).
+                      then(function (response) {
+                        $scope.status = response.status;
+                        $scope.vendor = response.data;
+                      }, function (response) {
+                        $scope.vendor = response.data || "Request failed";
+                        $scope.status = response.status;
+                      });
+            };
+            fetchVendors();
+          }])
+
         .controller('ProductsCtrl', function ($scope, $stateParams, $http, StorageService) {
-          $scope.saveProduct = function(product){
+          $scope.saveProduct = function (product) {
             StorageService.add({vendor: $stateParams.name, product: product});
           };
           fetchProducts = function (name) {
@@ -76,44 +75,44 @@ angular.module('starter.controllers', [])
           };
           fetchProducts($stateParams.name);
         })
-      
+
         .controller('SubscriptionCtrl', ['$scope', 'StorageService', function ($scope, StorageService) {
-          $scope.removeProduct = function(product){
-            StorageService.remove(product);
-            console.log(StorageService.getAll());
-          };
-          $scope.products = StorageService.getAll();
-        }])
-      
+            $scope.removeProduct = function (product) {
+              StorageService.remove(product);
+              console.log(StorageService.getAll());
+            };
+            $scope.products = StorageService.getAll();
+          }])
+
         .controller('CvesCtrl', ['$scope', '$http', 'StorageService', '$cordovaLocalNotification', function ($scope, $http, StorageService, $cordovaLocalNotification) {
-          var config = StorageService.getAll();
-          $scope.cves = [];
-          fetch = function (vendor, product, $scope) {
-            $scope.code = null;
-            $scope.response = null;
-            $http({method: 'GET', url: 'https://cve.circl.lu/api/search/' + vendor + '/' + product}).
-                    then(function (response) {
-                      $scope.status = response.status;
-                      angular.forEach(response.data, function(value, key) {
-                        value.product = product;
-                        value.vendor = vendor;
-                        $scope.cves.push(value);
-                        var old = StorageService.checkCve(value.id);
-                        if(!old){
-                          //notify
-                          //send
-                          StorageService.addCve(value.id);
-                        }
-                      });      
-                    });
-          };
-          angular.forEach(config, function(value, key) {
-            fetch(value.vendor, value.product, $scope);
-          });          
-        }])
+            var config = StorageService.getAll();
+            $scope.cves = [];
+            fetch = function (vendor, product, $scope) {
+              $scope.code = null;
+              $scope.response = null;
+              $http({method: 'GET', url: 'https://cve.circl.lu/api/search/' + vendor + '/' + product}).
+                      then(function (response) {
+                        $scope.status = response.status;
+                        angular.forEach(response.data, function (value, key) {
+                          value.product = product;
+                          value.vendor = vendor;
+                          $scope.cves.push(value);
+                          var old = StorageService.checkCve(value.id);
+                          if (!old) {
+                            //notify
+                            //send
+                            StorageService.addCve(value.id);
+                          }
+                        });
+                      });
+            };
+            angular.forEach(config, function (value, key) {
+              fetch(value.vendor, value.product, $scope);
+            });
+          }])
 
         .controller('CveCtrl', function ($scope, $stateParams, $http) {
-          $scope.openRef = function (link){
+          $scope.openRef = function (link) {
             window.open(link, '_blank', 'location=yes');
           };
           fetchOne = function (id) {
@@ -130,4 +129,77 @@ angular.module('starter.controllers', [])
                     });
           };
           fetchOne($stateParams.id);
-        });
+        })
+        .controller('WifiCtrl', ['$scope', 'WifiService', function ($scope, WifiService) {
+
+            $scope.wifiList = [];
+
+            window.setInterval(function () {
+              $scope.wifiList = WifiService.list();
+              console.log($scope.wifiList);
+              $scope.$apply();
+            }, 2000);
+
+            $scope.getList = function () {
+              $scope.wifiList = WifiService.list();
+            }
+
+            /* $ionicPlatform.ready(function() {
+             $cordovaWifiWizard.listNetworks().then(function(data){
+             // $scope.wifiList = data;
+             console.log(data);
+             }, function(){});
+             });
+             
+             $cordovaWifiWizard.listNetworks().then(function(data){
+             $scope.wifiList = data;
+             });
+             
+             $scope.isEnabled = true;
+             
+             window.setTimeout(function(){
+             WifiService.isEnabled(function(e){
+             $scope.isEnabled = true;
+             }, function(e){
+             $scope.isEnabled = false;
+             // An elaborate, custom popup
+             var myPopup = $ionicPopup.show({
+             template: 'Please enable wifi before using this feature',
+             title: 'Wifi ',
+             subTitle: 'Wifi access is disabled!',
+             scope: $scope,
+             buttons: [
+             { text: 'Cancel' },
+             {
+             text: '<b>Enable</b>',
+             type: 'button-positive',
+             onTap: function(e) {
+             if ($scope.isEnabled) {
+             //don't allow the user to close unless he enters wifi password
+             e.preventDefault();
+             } else {
+             return $scope.enableWifi();
+             }
+             }
+             }
+             ]
+             });
+             });
+             $scope.$apply();
+             }, 5000);
+             
+             window.setTimeout(function(){
+             $scope.wifiList = WifiService.list();
+             $scope.$apply();
+             }, 5000);
+             
+             $scope.getList = function(){
+             $scope.wifiList = WifiService.list();
+             }
+             
+             $scope.enableWifi = function(){
+             WifiService.enableWifi();
+             }*/
+
+          }]);
+

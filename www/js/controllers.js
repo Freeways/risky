@@ -85,7 +85,7 @@ angular.module('starter.controllers', [])
           $scope.products = StorageService.getAll();
         }])
       
-        .controller('CvesCtrl', ['$scope', '$http', 'StorageService', function ($scope, $http, StorageService) {
+        .controller('CvesCtrl', ['$scope', '$http', 'StorageService', '$cordovaLocalNotification', function ($scope, $http, StorageService, $cordovaLocalNotification) {
           var config = StorageService.getAll();
           $scope.cves = [];
           fetch = function (vendor, product, $scope) {
@@ -98,6 +98,12 @@ angular.module('starter.controllers', [])
                         value.product = product;
                         value.vendor = vendor;
                         $scope.cves.push(value);
+                        var old = StorageService.checkCve(value.id);
+                        if(!old){
+                          //notify
+                          //send
+                          StorageService.addCve(value.id);
+                        }
                       });      
                     });
           };
@@ -107,7 +113,9 @@ angular.module('starter.controllers', [])
         }])
 
         .controller('CveCtrl', function ($scope, $stateParams, $http) {
-          console.log($stateParams);
+          $scope.openRef = function (link){
+            window.open(link, '_blank', 'location=yes');
+          };
           fetchOne = function (id) {
             $scope.code = null;
             $scope.response = null;
@@ -115,6 +123,7 @@ angular.module('starter.controllers', [])
                     then(function (response) {
                       $scope.status = response.status;
                       $scope.cve = response.data;
+                      console.log(response.data);
                     }, function (response) {
                       $scope.cve = response.data || "Request failed";
                       $scope.status = response.status;

@@ -4,24 +4,42 @@
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
-angular.module('starter', ['ionic', 'ngStorage','starter.controllers'])
+angular.module('starter', ['ionic', 'ngStorage', '$cordovaLocalNotification', 'starter.controllers'])
 .factory ('StorageService', function ($localStorage) {
   $localStorage = $localStorage.$default({
-    products: []
+    products: [], cve: []
   });
   var _getAll = function () {
     return $localStorage.products;
   };
   var _add = function (product) {
     $localStorage.products.push(product);
-  }
+  };
   var _remove = function (product) {
     $localStorage.products.splice($localStorage.products.indexOf(product), 1);
-  }
+  };
+  var _getAllCve = function () {
+    return $localStorage.cves;
+  };
+  var _addCve = function (cve) {
+      $localStorage.cves.push(cve);
+  };
+  var _checkCve = function (cve) {
+    var exist = $localStorage.cves.indexOf(cve);
+    exist++;
+    return exist;
+  };
+  var _removeCve = function (cve) {
+    $localStorage.cves.splice($localStorage.cves.indexOf(cve), 1);
+  };
   return {
       getAll: _getAll,
       add: _add,
-      remove: _remove
+      remove: _remove,
+      getAllCve: _getAllCve,
+      addCve: _addCve,
+      checkCve : _checkCve,
+      removeCve: _removeCve
     };
 })
 .run(function($ionicPlatform) {

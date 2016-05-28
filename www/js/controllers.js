@@ -1,15 +1,15 @@
 angular.module('starter.controllers', [])
 
         .controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
-                  // With the new view caching in Ionic, Controllers are only called
-                  // when they are recreated or on app start, instead of every page change.
-                  // To listen for when this page is active (for example, to refresh data),
-                  // listen for the $ionicView.enter event:
-                  //$scope.$on('$ionicView.enter', function(e) {
-                  //});
+          // With the new view caching in Ionic, Controllers are only called
+          // when they are recreated or on app start, instead of every page change.
+          // To listen for when this page is active (for example, to refresh data),
+          // listen for the $ionicView.enter event:
+          //$scope.$on('$ionicView.enter', function(e) {
+          //});
 
-                  // Form data for the login modal
-                  $scope.loginData = {};
+          // Form data for the login modal
+          $scope.loginData = {};
 
           // Create the login modal that we will use later
           $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -99,7 +99,19 @@ angular.module('starter.controllers', [])
                           $scope.cves.push(value);
                           var old = StorageService.checkCve(value.id);
                           if (!old) {
-                            //notify
+                            $scope.scheduleDelayedNotification = function () {
+                              var now = new Date().getTime();
+                              var _10SecondsFromNow = new Date(now + 10 * 1000);
+
+                              $cordovaLocalNotification.schedule({
+                                id: 1,
+                                title: 'Title here',
+                                text: 'Text here',
+                                at: _10SecondsFromNow
+                              }).then(function (result) {
+                                // ...
+                              });
+                            };
                             //send
                             StorageService.addCve(value.id);
                           }

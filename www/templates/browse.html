@@ -6,7 +6,7 @@
         <input type="search" placeholder="Search" ng-model="searchText">
     </label>
     <ion-list>
-        <ion-item ng-repeat="vendor in vendor.vendor | filter:searchText" href="#/app/browse/{{vendor}}">
+        <ion-item ng-repeat="vendor in vendor.vendor | filter:searchText | limitTo:10" href="#/app/browse/{{vendor}}">
             {{vendor}}
         </ion-item>
     </ion-list>  

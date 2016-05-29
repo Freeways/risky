@@ -8,7 +8,7 @@
                 <p>{{cve.summary}}</p>
 
                 <div>
-                    <div class="bar bar-header bar-dark" style="position:relative">
+                    <div class="bar bar-header bar-dark" style="position:relative; margin: 12px 0">
                         <h1 class="title">Vulnerable configurations (CPE)</h1>
                     </div>
                     <dl ng-repeat="cpe in cve.vulnerable_configuration">
@@ -18,7 +18,7 @@
                 </div>
                 
                 <div>
-                    <div class="bar bar-header bar-dark" style="position:relative">
+                    <div class="bar bar-header bar-dark" style="position:relative; margin: 12px 0">
                         <h1 class="title">Access and Impact</h1>
                     </div>
                     <dl>
@@ -34,7 +34,7 @@
                 </div>
                 
                 <div>
-                    <div class="bar bar-header bar-dark" style="position:relative">
+                    <div class="bar bar-header bar-dark" style="position:relative; margin: 12px 0">
                         <h1 class="title">Common Attack Pattern Enumeration and Classification Solutions</h1>
                     </div>
                     <dl ng-repeat="capec in cve.capec">
@@ -44,7 +44,7 @@
                 </div>
                 
                 <div>
-                    <div class="bar bar-header bar-dark" style="position:relative">
+                    <div class="bar bar-header bar-dark" style="position:relative; margin: 12px 0">
                         <h1 class="title">References</h1>
                     </div>
                     <ul>
@@ -55,8 +55,8 @@
                 </div>
 
             </div>
-            <div class="item item-divider">
-                Last Update on: {{cve.Modified| date:"dd/MM/yyyy"}}
+            <div class="item item-divider text-right">
+                <i class="icon ion-calendar"></i> <small>Last Update on: {{cve.Modified| date:"dd/MM/yyyy"}}</small>
             </div>
         </div>
     </ion-content>

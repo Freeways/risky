@@ -1,21 +1,54 @@
-<ion-view view-title="Latest Cve">
+<ion-view view-title="Latest CVE" ng-controller="CvesCtrl" cache-view="false">
     <ion-content>
-        <ion-list>
-            <ion-item ng-repeat="cve in cves" href="#/app/cves/{{cve.id}}">
-                <button class="button {{cve.cvss < 2 ? 'button-balanced' : cve.cvss < 5 ? 'button-energized': cve.cvss < 8 ? 'button-assertive' : 'button-dark' }}">
-                    {{cve.cvss}}
-                </button>
-                <button class="button button-positive">
-                    {{cve.vendor}}
-                </button>
-                <button class="button button-calm">
-                    {{cve.product}}
-                </button>
-                <span>{{cve.summary}}</span>
-            </ion-item>
-        </ion-list>
+        <div ng-show="iSnew">
+            <ion-toggle ng-model="filter" toggle-class="toggle-calm">Sort by</ion-toggle>
+            <ion-list ng-show='filter'>
+                <ion-radio ng-model="choice" ng-value="'cvss'">Score</ion-radio>
+                <ion-radio ng-model="choice" ng-value="'Modified'">Date</ion-radio>
+            </ion-list>
+            <ion-list>
+                <ion-item ng-repeat="cve in cves| orderBy:choice:1" href="#/app/cves/{{cve.id}}">
+                    <div class="card">
+                        <div class="item item-text-wrap">
+                            <div class="button-bar">
+                                <button class="col col-20 button {{cve.cvss < 2 ? 'button-balanced' : cve.cvss < 5 ? 'button-energized': cve.cvss < 8 ? 'button-assertive' : 'button-dark' }}">
+                                    {{cve.cvss}}
+                                </button>
+                                <button class="col  button button-clear button-dark" >
+                                    <b style="font-size: 18px">{{cve.product}}</b>
+                                </button>
+                                <button class="col col-20 button button-positive">
+                                    {{cve.vendor}}
+                                </button>
+                            </div>
+                            <p style="padding-top: 12px">{{cve.summary}}</p>
+                        </div>
+                        <div class="item item-divider text-right">
+                            <i class="icon ion-calendar"></i> <small>{{cve.Modified| date:"dd/MM/yyyy"}}</small>
+                        </div>
+                    </div>
+                </ion-item>
+            </ion-list>
+        </div>
+        <div class="list card text-center" ng-hide="iSnew">
+            <div class="item item-avatar">
+                <h1>Welcome to Risky</h1>
+            </div>
 
+            <div class="item item-image">
+                <img src="img/drawing-text-250.png">
+                <p>Subscribe with Risky and recieve the latest CVE reports of your favorit products.</p>
+                <p>Please, proceed by adding the product you are intersted in.</p>
+            </div>
+
+            <a class="item assertive" href="#/app/browse" style="font-size: 18px">
+                <i class="icon ion-plus-circled"></i>
+                Add products
+            </a>
+
+        </div>
     </ion-content>
+
     <div class="bar bar-footer bar-dark" ng-show="firstrun">
         <button class="button button-light" ng-click="setSendData()">
             Yes

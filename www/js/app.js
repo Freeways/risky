@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 // 'starter.controllers' is found in controllers.js
 
-angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controllers'])
+angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'ngAnimate', 'starter.controllers'])
 .factory ('StorageService', function ($localStorage) {
   $localStorage = $localStorage.$default({
     products: [], cves: [], config: {}
@@ -15,6 +15,11 @@ angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controlle
   };
   var _add = function (product) {
     $localStorage.products.push(product);
+  };
+  var _check = function (product) {
+    var exist = $localStorage.products.indexOf(product);
+    exist++;
+    return exist;
   };
   var _remove = function (product) {
     $localStorage.products.splice($localStorage.products.indexOf(product), 1);
@@ -42,6 +47,7 @@ angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controlle
   return {
       getAll: _getAll,
       add: _add,
+      check: _check,
       remove: _remove,
       getAllCve: _getAllCve,
       addCve: _addCve,
@@ -53,6 +59,22 @@ angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controlle
 })
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
+//    if(window.cordova && window.cordova.plugins.Keyboard) {
+//        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+//    }
+//    if(window.StatusBar) {
+//        StatusBar.styleDefault();
+//    }
+//    window.plugin.notification.local.onadd = function (id, state, json) {
+//        var notification = {
+//            id: id,
+//            state: state,
+//            json: json
+//        };
+//        $timeout(function() {
+//            $rootScope.$broadcast("$cordovaLocalNotification:added", notification);
+//        });
+//    };
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins.Keyboard) {
@@ -119,7 +141,8 @@ angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controlle
       views: {
         'menuContent': {
           templateUrl: 'templates/cves.html',
-          controller: 'CvesCtrl'
+          controller: 'CvesCtrl',
+          cache: false
       }
     }
   })

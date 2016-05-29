@@ -1,25 +1,37 @@
-<div class="container" ng-controller="WifiCtrl">
-    <div ng-hide="(wifiList).length" style="text-align: center;">
-       <br><br>
-        Wifi detection in progress ...
-       <br><br>
-       <ion-spinner class="spinner-assertive"></ion-spinner>
-       <br><br>
-    </div>
-    <div class="list card" ng-show="(wifiList).length">
-      <a href="#" class="item item-icon-left" ng-repeat="wifi in wifiList">
-        <i class="icon ion-wifi"></i>
-        {{wifi.SSID}}
-        <button type="button" class="btn btn-default btn-lg btn-block" ng-click="infoWifi(wifi)">Infos</button> 
-        <div class="stars">
-            <span class="ion-android-star" data-pack="android"></span>
-            <span class="ion-android-star" data-pack="android"></span>
-            <span class="ion-android-star" data-pack="android"></span>
-            <span class="ion-android-star" data-pack="android"></span>
-            <span class="ion-android-star-outline" data-pack="android"></span>
+<ion-view view-title="Wifi Security">
+  <ion-content>
+    <div ng-controller="WifiCtrl">
+        <div class="bar bar-header bar-balanced" ng-show="current" style="position: relative;">
+          <h1 class="title">Connected on <b>{{current}}</h1>
         </div>
-        <p> {{wifi.score}} <small> / </small> 5 </p>
-      </a>
+        <div class="card" ng-hide="wifiList.length" style="text-align: center;">
+           <br><br>
+            Wifi detection in progress ...
+           <br><br>
+           <ion-spinner class="spinner-assertive"></ion-spinner>
+           <br><br>
+        </div>
+        <ul class="list card" ng-show="wifiList.length">
+          <li href="#" class="item" ng-repeat="wifi in wifiList">
+            <h1 class="title" style="display:inline;"><i class="icon ion-wifi"></i>{{wifi.SSID}}</h1>
+            <br/>
+            <label style="background-color: grey; color: white; padding: 2px; float: left;">
+              <b>{{getSecurity(wifi.capabilities)}}<b>
+            </label>
+            <div class="stars" style="float: left;margin-left: 5px;">
+              <span class="ion-android-star" data-pack="android" ng-repeat="i in getNumber(getScore(wifi.capabilities)) track by $index"></span>
+              <span class="ion-android-star-outline" data-pack="android" ng-repeat="i in getNumber(5 - getScore(wifi.capabilities))  track by $index"></span>
+            </div>
+            <div style="float: left;margin-left: 5px;"> {{getScore(wifi.capabilities)}} <small> / </small> 5 </div>
+            <div style="clear:both;"></div>
+            <p style="color: grey; font-size:10px;">
+              - BSSID : <b>{{wifi.BSSID}}</b><br/>
+              - Capabilities : <b>{{wifi.capabilities}}</b><br/>
+              - Frequency : <b>{{wifi.frequency}}</b><br/>
+              - Level : <b>{{wifi.level}}</b><br/>
+            </p>
+          </li>
+        </ul>
     </div>
-    <button class="button button-icon icon ion-refresh" ng-click="getList()"><i class="icon ion-refresh"></i>Refresh</button>
-</div>
+  </ion-content>
+</ion-view>

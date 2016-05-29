@@ -170,76 +170,98 @@ angular.module('starter.controllers', [])
           };
         }])
         
-        .controller('WifiCtrl', ['$scope', 'WifiService', function ($scope, WifiService) {
+        .controller('WifiCtrl', ['$scope', '$http', '$interval', function($scope, $http, $interval){
+          
+          $scope.wifiList = [];
+          $scope.wifiIsOff = false;
+          $scope.current = '';
 
-            $scope.wifiList = [];
+          if (typeof WifiWizard !== 'undefined') {
 
-            window.setInterval(function () {
-              $scope.wifiList = WifiService.list();
-              console.log($scope.wifiList);
-              $scope.$apply();
-            }, 2000);
+            WifiWizard.isWifiEnabled(function(wifiIsEnabled) {
 
-            $scope.getList = function () {
-              $scope.wifiList = WifiService.list();
+                if (!wifiIsEnabled) {
+                    $scope.wifiIsOff = true;
+                    console.log('Wifi is off');
+                } else {
+
+                    WifiWizard.getCurrentSSID(function(result){
+                      $scope.current = result.substring(1, result.length-2);
+                    }, function(){
+                      console.log("Cannot retrieve current network.");
+                    });
+
+
+                    WifiWizard.listNetworks(function(previouslySelectedNetworks) {
+                        if (previouslySelectedNetworks.length > 0) {
+                            console.log("A network was previously selected but not connected. Inform user why we're presenting the network list now.");
+                            $scope.previouslySelectedNetworkExpired = true;
+                        }
+
+                        WifiWizard.startScan(function() {
+                            console.log("Scanning for networks...");
+                            $scope.scanResultsInterval = setInterval(function() {
+                                console.log("Scan interval running.");
+                                WifiWizard.getScanResults(function(availableNetworks) {
+                                    // Update
+                                    $scope.wifiList = availableNetworks;
+                                    $scope.$apply();
+                                    console.log("Updating network list with results.", availableNetworks)
+                                }, function() {
+                                    console.log("Failed to get scan results.");
+                                });
+                            }, 3000);
+                        }, function() {
+                            console.log('Failed to start WiFi scan.');
+                        });
+                    }, function() {
+                        console.log('Failed to get a listing of previously selected networks.');
+                    });
+                }
+            }, function() {
+
+            });
+          } else {
+            console.log("No WifiWizard plugin loaded.");
+          }
+
+          $scope.getSecurity = function(capabilities){
+            if (capabilities.indexOf("PSK") != -1){ // PSK
+              if(capabilities.indexOf("WPA2-PSK") != -1){
+                return "WPA2";
+              }else if(capabilities.indexOf("WPA-PSK") != -1){
+                return "WPA";
+              }else{
+                return "PSK-?";
+              }
+            }else{ // Other
+              if(capabilities.indexOf("WEP") != -1){
+                return "WEP";
+              }else if(capabilities.indexOf("EAP") != -1){
+                return "EAP";
+              }else{
+                return "OPEN";
+              }
             }
+          }
 
-            /* $ionicPlatform.ready(function() {
-             $cordovaWifiWizard.listNetworks().then(function(data){
-             // $scope.wifiList = data;
-             console.log(data);
-             }, function(){});
-             });
-             
-             $cordovaWifiWizard.listNetworks().then(function(data){
-             $scope.wifiList = data;
-             });
-             
-             $scope.isEnabled = true;
-             
-             window.setTimeout(function(){
-             WifiService.isEnabled(function(e){
-             $scope.isEnabled = true;
-             }, function(e){
-             $scope.isEnabled = false;
-             // An elaborate, custom popup
-             var myPopup = $ionicPopup.show({
-             template: 'Please enable wifi before using this feature',
-             title: 'Wifi ',
-             subTitle: 'Wifi access is disabled!',
-             scope: $scope,
-             buttons: [
-             { text: 'Cancel' },
-             {
-             text: '<b>Enable</b>',
-             type: 'button-positive',
-             onTap: function(e) {
-             if ($scope.isEnabled) {
-             //don't allow the user to close unless he enters wifi password
-             e.preventDefault();
-             } else {
-             return $scope.enableWifi();
-             }
-             }
-             }
-             ]
-             });
-             });
-             $scope.$apply();
-             }, 5000);
-             
-             window.setTimeout(function(){
-             $scope.wifiList = WifiService.list();
-             $scope.$apply();
-             }, 5000);
-             
-             $scope.getList = function(){
-             $scope.wifiList = WifiService.list();
-             }
-             
-             $scope.enableWifi = function(){
-             WifiService.enableWifi();
-             }*/
-
-          }]);
-
+          $scope.getScore = function(capabilities){
+            if(capabilities.indexOf("WPA2-PSK-CCMP") != -1){
+              return 5;
+            }else if(capabilities.indexOf("WPA-PSK-CCMP") != -1){
+              return 4;
+            }else if(capabilities.indexOf("WPA-PSK-CCMP+TKIP") != -1){
+              return 3;
+            }else if(capabilities.indexOf("WPA-PSK-TKIP") != -1){
+              return 2;
+            }else if(capabilities.indexOf("WEP") != -1){
+              return 1;
+            }else{
+              return 0;
+            }
+          }
+          
+          $scope.getNumber = function(num) {
+            return new Array(num);   
+          }
+        }]);

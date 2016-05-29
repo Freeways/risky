@@ -8,7 +8,7 @@
 angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controllers', 'WifiServices'])
 .factory ('StorageService', function ($localStorage) {
   $localStorage = $localStorage.$default({
-    products: [], cves: []
+    products: [], cves: [], config: {}
   });
   var _getAll = function () {
     return $localStorage.products;
@@ -33,6 +33,12 @@ angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controlle
   var _removeCve = function (cve) {
     $localStorage.cves.splice($localStorage.cves.indexOf(cve), 1);
   };
+  var _alterConfig = function(key, value){
+    $localStorage.config[key] = value;
+  };
+  var _getConfig = function(key){
+    return $localStorage.config[key];
+  };
   return {
       getAll: _getAll,
       add: _add,
@@ -40,7 +46,9 @@ angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controlle
       getAllCve: _getAllCve,
       addCve: _addCve,
       checkCve : _checkCve,
-      removeCve: _removeCve
+      removeCve: _removeCve,
+      alterConfig: _alterConfig,
+      getConfig: _getConfig
     };
 })
 .run(function($ionicPlatform) {
@@ -69,11 +77,12 @@ angular.module('starter', ['ionic', 'ngStorage', 'ngCordova', 'starter.controlle
     controller: 'AppCtrl'
   })
 
-  .state('app.search', {
-    url: '/search',
+  .state('app.setting', {
+    url: '/setting',
     views: {
       'menuContent': {
-        templateUrl: 'templates/search.html'
+        templateUrl: 'templates/settings.html',
+        controller: 'SettingCtrl'
       }
     }
   })

@@ -86,6 +86,19 @@ angular.module('starter.controllers', [])
 
         .controller('CvesCtrl', ['$scope', '$http', 'StorageService', '$cordovaLocalNotification', function ($scope, $http, StorageService, $cordovaLocalNotification) {
             var config = StorageService.getAll();
+            var sendData = StorageService.getConfig('sendData');
+            $scope.firstrun = 0;
+            if(sendData === undefined){
+              $scope.firstrun = 1;
+            }
+            $scope.setSendData = function(){
+              StorageService.alterConfig('sendData', 1);
+              $scope.firstrun = 0;
+            };
+            $scope.unsetSendData = function(){
+              StorageService.alterConfig('sendData', 0);
+              $scope.firstrun = 0;
+            };
             $scope.cves = [];
             fetch = function (vendor, product, $scope) {
               $scope.code = null;
@@ -96,6 +109,7 @@ angular.module('starter.controllers', [])
                         angular.forEach(response.data, function (value, key) {
                           value.product = product;
                           value.vendor = vendor;
+                          value.cve_id = value.id;
                           $scope.cves.push(value);
                           var old = StorageService.checkCve(value.id);
                           if (!old) {
@@ -112,7 +126,12 @@ angular.module('starter.controllers', [])
                                 // ...
                               });
                             };
-                            //send
+                            console.log(StorageService.getConfig('sendData'));
+                            if(StorageService.getConfig('sendData')){
+                              console.log('yes');
+                              $http({method: 'PUT', url: 'http://localhost:1337/cve/create', data: value}).
+                                      then(function (response) {});
+                            }
                             StorageService.addCve(value.id);
                           }
                         });
@@ -142,6 +161,15 @@ angular.module('starter.controllers', [])
           };
           fetchOne($stateParams.id);
         })
+        
+        .controller('SettingCtrl', ['$scope', 'StorageService' ,function ($scope, StorageService) {
+          $scope.sendData = {value: StorageService.getConfig('sendData')};
+          $scope.toggleSendData = function(){
+            console.log($scope.sendData);
+            StorageService.alterConfig('sendData', $scope.sendData.value);
+          };
+        }])
+        
         .controller('WifiCtrl', ['$scope', 'WifiService', function ($scope, WifiService) {
 
             $scope.wifiList = [];

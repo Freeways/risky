@@ -1,18 +1,28 @@
 <ion-view view-title="Latest Cve">
-  <ion-content>
-    <ion-list>
-      <ion-item ng-repeat="cve in cves" href="#/app/cves/{{cve.id}}">
-        <button class="button {{cve.cvss < 2 ? 'button-balanced' : cve.cvss < 5 ? 'button-energized': cve.cvss < 8 ? 'button-assertive' : 'button-dark' }}">
-            {{cve.cvss}}
+    <ion-content>
+        <ion-list>
+            <ion-item ng-repeat="cve in cves" href="#/app/cves/{{cve.id}}">
+                <button class="button {{cve.cvss < 2 ? 'button-balanced' : cve.cvss < 5 ? 'button-energized': cve.cvss < 8 ? 'button-assertive' : 'button-dark' }}">
+                    {{cve.cvss}}
+                </button>
+                <button class="button button-positive">
+                    {{cve.vendor}}
+                </button>
+                <button class="button button-calm">
+                    {{cve.product}}
+                </button>
+                <span>{{cve.summary}}</span>
+            </ion-item>
+        </ion-list>
+
+    </ion-content>
+    <div class="bar bar-footer bar-dark" ng-show="firstrun">
+        <button class="button button-light" ng-click="setSendData()">
+            Yes
         </button>
-        <button class="button button-positive">
-            {{cve.vendor}}
+        <h1 class="title">Share Risky's data annonomisly with us to help improve Security?</h1>
+        <button class="button button-light" ng-click="unsetSendData()">
+            No
         </button>
-        <button class="button button-calm">
-            {{cve.product}}
-        </button>
-        <span>{{cve.summary}}</span>
-      </ion-item>
-    </ion-list>
-  </ion-content>
+    </div>
 </ion-view>

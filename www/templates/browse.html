@@ -1,5 +1,14 @@
-<ion-view view-title="Browse">
+<ion-view view-title="Vendors">
   <ion-content>
-    <h1>Browse</h1>
+    <h1>Vendor List</h1>
+    <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" placeholder="Search" ng-model="searchText">
+    </label>
+    <ion-list>
+        <ion-item ng-repeat="vendor in vendor.vendor | filter:searchText" href="#/app/browse/{{vendor}}">
+            {{vendor}}
+        </ion-item>
+    </ion-list>  
   </ion-content>
 </ion-view>

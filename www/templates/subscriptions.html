@@ -1,0 +1,16 @@
+<ion-view view-title="Subscriptions">
+  <ion-content>
+    <h1>My products</h1>
+    <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" placeholder="Search" ng-model="searchText">
+    </label>
+    <ion-list>
+        <div collection-repeat="product in products | filter:searchText" divider-collection-repeat >
+            <ion-item ng-click="removeProduct(product)">
+                {{product.product}} - {{product.vendor}}
+            </ion-item>
+        </div>
+    </ion-list>  
+  </ion-content>
+</ion-view>

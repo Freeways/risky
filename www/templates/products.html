@@ -1,0 +1,16 @@
+<ion-view view-title="Products">
+  <ion-content>
+    <h1>Product's configuration</h1>
+    <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+        <input type="search" placeholder="Search" ng-model="searchText">
+    </label>
+    <ion-list>
+        <div collection-repeat="product in products.product | filter:searchText" divider-collection-repeat >
+            <ion-item ng-click="saveProduct(product)">
+                {{product}}
+            </ion-item>
+        </div>
+    </ion-list>  
+  </ion-content>
+</ion-view>

@@ -1,0 +1,63 @@
+<ion-view view-title="{{cve.id}}">
+    <ion-content>
+        <div class="card">
+            <div class="item item-divider">
+                <h1>{{cve.id}}</h1>
+            </div>
+            <div class="item item-text-wrap">
+                <p>{{cve.summary}}</p>
+
+                <div>
+                    <div class="bar bar-header bar-dark" style="position:relative">
+                        <h1 class="title">Vulnerable configurations (CPE)</h1>
+                    </div>
+                    <dl ng-repeat="cpe in cve.vulnerable_configuration">
+                        <dt>{{cpe.title}}</dt>
+                        <dd>{{cpe.id}}</dd>
+                    </dl>
+                </div>
+                
+                <div>
+                    <div class="bar bar-header bar-dark" style="position:relative">
+                        <h1 class="title">Access and Impact</h1>
+                    </div>
+                    <dl>
+                        <dt>Access</dt>
+                        <dd>Athentication : {{cve.access.authentication}}</dd>
+                        <dd>Complexity : {{cve.access.complexity}}</dd>
+                        <dd>Vector : {{cve.access.vector}}</dd>
+                        <dt>Impact</dt>
+                        <dd>Availability : {{cve.impact.availability}}</dd>
+                        <dd>Confidentiality : {{cve.impact.confidentiality}}</dd>
+                        <dd>Integrity : {{cve.impact.integrity}}</dd>
+                    </dl>
+                </div>
+                
+                <div>
+                    <div class="bar bar-header bar-dark" style="position:relative">
+                        <h1 class="title">Common Attack Pattern Enumeration and Classification Solutions</h1>
+                    </div>
+                    <dl ng-repeat="capec in cve.capec">
+                        <dt>{{capec.name}}</dt>
+                        <dd ng-repeat="solution in capec.solutions">{{solution}}</dd>
+                    </dl>
+                </div>
+                
+                <div>
+                    <div class="bar bar-header bar-dark" style="position:relative">
+                        <h1 class="title">References</h1>
+                    </div>
+                    <ul>
+                        <li ng-repeat="reference in cve.references">
+                            <a href="{{reference}}" target="_blank" ng-click="openRef(reference)"></a>{{reference}}
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            <div class="item item-divider">
+                Last Update on: {{cve.Modified| date:"dd/MM/yyyy"}}
+            </div>
+        </div>
+    </ion-content>
+</ion-view>
